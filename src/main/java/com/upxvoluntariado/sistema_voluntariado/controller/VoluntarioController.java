@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.upxvoluntariado.sistema_voluntariado.entity.Voluntario;
 import com.upxvoluntariado.sistema_voluntariado.service.VoluntarioService;
 
+import jakarta.validation.Valid;
+
 @RestController //Indica que esta classe é um controlador REST, lida com requisicoes HTTP.
 @RequestMapping("/voluntarios") //Identificar que quer cadastrar um voluntario e diferenciar o endpoint da OSC.
 public class VoluntarioController {
@@ -20,9 +22,10 @@ public class VoluntarioController {
     }
 
     @PostMapping //O metodo vai responder requisicao HTTP POST.(Criando um novo voluntario)
-    public ResponseEntity<Voluntario> cadastrarVoluntario(@RequestBody Voluntario voluntario){ //Request body vai converter o corpo da requisicao(JSON) em um objeto da classe voluntario.
+    public ResponseEntity<Voluntario> cadastrarVoluntario(@Valid @RequestBody Voluntario voluntario){ //Request body vai converter o corpo da requisicao(JSON) em um objeto da classe voluntario.
+        
         Voluntario novoVoluntario = voluntarioService.salvarVoluntario(voluntario); //Chama o metodo de criptografar a senha.
         
         return ResponseEntity.ok(novoVoluntario); //Retorna um OK e os dados
-    }
+    }   
 }
