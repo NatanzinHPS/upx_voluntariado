@@ -1,7 +1,12 @@
 package com.upxvoluntariado.sistema_voluntariado.controller;
 
-import org.springframework.http.ResponseEntity;
+import java.util.List;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,21 +16,34 @@ import com.upxvoluntariado.sistema_voluntariado.service.VoluntarioService;
 
 import jakarta.validation.Valid;
 
+
+
 @RestController //Indica que esta classe é um controlador REST, lida com requisicoes HTTP.
 @RequestMapping("/voluntarios") //Identificar que quer cadastrar um voluntario e diferenciar o endpoint da OSC.
 public class VoluntarioController {
+    private VoluntarioService voluntarioService;
 
-    private VoluntarioService voluntarioService; //Declara o servico
-
-    public VoluntarioController(VoluntarioService voluntarioService) { //Injetar a dependencia
+    public VoluntarioController(VoluntarioService voluntarioService) {
         this.voluntarioService = voluntarioService;
     }
 
-    @PostMapping //O metodo vai responder requisicao HTTP POST.(Criando um novo voluntario)
-    public ResponseEntity<Voluntario> cadastrarVoluntario(@Valid @RequestBody Voluntario voluntario){ //Request body vai converter o corpo da requisicao(JSON) em um objeto da classe voluntario.
-        
-        Voluntario novoVoluntario = voluntarioService.salvarVoluntario(voluntario); //Chama o metodo de criptografar a senha.
-        
-        return ResponseEntity.ok(novoVoluntario); //Retorna um OK e os dados
-    }   
+    @PostMapping
+    List<Voluntario> create(@Valid @RequestBody Voluntario voluntario) {
+        return voluntarioService.create(voluntario);
+    }
+
+    @GetMapping
+    List<Voluntario> list() {
+        return voluntarioService.list();
+    }
+
+    @PutMapping
+    List<Voluntario> update(@Valid @RequestBody Voluntario voluntario) {
+        return voluntarioService.uptade(voluntario);
+    }
+
+    @DeleteMapping("{id}")
+    List<Voluntario> delete(@PathVariable("id") Long id) {
+        return voluntarioService.delete(id);
+    }
 }

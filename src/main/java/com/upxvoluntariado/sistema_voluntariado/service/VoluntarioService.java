@@ -1,6 +1,8 @@
 package com.upxvoluntariado.sistema_voluntariado.service;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import java.util.List;
+
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.upxvoluntariado.sistema_voluntariado.entity.Voluntario;
@@ -10,18 +12,27 @@ import com.upxvoluntariado.sistema_voluntariado.repository.VoluntarioRepository;
 public class VoluntarioService {
     
     private VoluntarioRepository voluntarioRepository; //Declara o repositorio
-    private BCryptPasswordEncoder bCryptPasswordEncoder; //Criptografar a senha do usuario antes de ir para o banco
     
     public VoluntarioService(VoluntarioRepository voluntarioRepository) { //tipo de injecao de dependencia 
         this.voluntarioRepository = voluntarioRepository; 
-        this.bCryptPasswordEncoder = new BCryptPasswordEncoder(); //Cria um codificador novo a cada instancia
+    }
+    public List<Voluntario> create(Voluntario voluntario){
+        voluntarioRepository.save(voluntario); //Salvar a senha criptografada no voluntario
+        return list();
+    }
+    public List<Voluntario> list(){
+        Sort sort = Sort.by("id").ascending();
+        return voluntarioRepository.findAll(sort);  
     }
 
-    public Voluntario salvarVoluntario(Voluntario voluntario) { 
-        String senhaCriptografada = bCryptPasswordEncoder.encode(voluntario.getSenha()); //Pegar a senha digitada para criptografar
-        voluntario.setSenha(senhaCriptografada); //Setar a senha ja criptografada
+    public List<Voluntario> uptade(Voluntario voluntario){
+        voluntarioRepository.save(voluntario);
+        return list();
+    }
 
-        return voluntarioRepository.save(voluntario); //Retornar a senha salva no voluntario
+    public List<Voluntario> delete(Long id){
+        voluntarioRepository.deleteById(id);
+        return list();
     }
     
 }
