@@ -1,7 +1,6 @@
 package com.upxvoluntariado.sistema_voluntariado.controller;
 
 import java.util.List;
-
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +18,7 @@ import jakarta.validation.Valid;
 
 
 @RestController //Indica que esta classe é um controlador REST, lida com requisicoes HTTP.
-@RequestMapping("/voluntarios") //Identificar que quer cadastrar um voluntario e diferenciar o endpoint da OSC.
+@RequestMapping("/voluntario") //Identificar que quer cadastrar um voluntario e diferenciar o endpoint da OSC.
 public class VoluntarioController {
     private VoluntarioService voluntarioService;
 

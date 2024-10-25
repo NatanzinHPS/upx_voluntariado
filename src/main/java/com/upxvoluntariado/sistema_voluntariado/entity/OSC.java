@@ -12,38 +12,29 @@ import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 
-@Entity //Identificar que é uma entidade
-@Table(name = "voluntarios") //Nome da tabela
-public class Voluntario {
-    @Id //Mostrar que é um ID
-    @GeneratedValue(strategy = GenerationType.IDENTITY) //Tipo auto increment no MySQL
+@Entity
+@Table(name = "oscs")
+public class OSC {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @NotNull(message = "Nome é obrigatório")
-    private String nomeCompleto;
 
-    @Size(min = 11, max = 11, message = "O CPF deve ter exatamente 11 caracteres")
-    @Column(columnDefinition = "CHAR(11)")
-    @NotNull(message = "CPF é obrigatório")
-    private String cpf;
+    @NotNull(message = "Nome é obrigatório")
+    private String nome;
+
+    @Size(min = 14, max = 14, message = "O CNPJ deve ter exatamente 14 caracteres")
+    @Column(columnDefinition = "CHAR(14)")
+    @NotNull(message = "CNPJ é obrigatório")
+    private String cnpj;
 
     @Email
     @NotNull(message = "Email é obrigatório")
     private String email;
 
-    @NotNull(message = "Telefone é obrigatório")
-    private String telefone;
-
     @NotNull(message = "Senha é obrigatório")
     private String senha;
-
-    @NotNull(message = "Data de nascimento é obrigatório")
-    @Past(message = "Data de nascimento deve ser uma data passada") //Data de nasc tem q ser passada da atual
-    @Temporal(TemporalType.DATE) //YYYY-MM-DD
-    private Date dataNascimento;
 
     @Temporal(TemporalType.DATE) 
     private Date dataCadastro;
@@ -52,8 +43,7 @@ public class Voluntario {
     protected void onCreate(){
         this.dataCadastro = new Date();
     }
-    
-    //Get e Set basico
+
     public Long getId() {
         return id;
     }
@@ -62,12 +52,20 @@ public class Voluntario {
         this.id = id;
     }
 
-    public String getNomeCompleto() {
-        return nomeCompleto;
+    public String getNome() {
+        return nome;
     }
 
-    public void setNomeCompleto(String nomeCompleto) {
-        this.nomeCompleto = nomeCompleto;
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getCnpj() {
+        return cnpj;
+    }
+
+    public void setCnpj(String cnpj) {
+        this.cnpj = cnpj;
     }
 
     public String getEmail() {
@@ -86,22 +84,6 @@ public class Voluntario {
         this.senha = senha;
     }
 
-    public String getTelefone() {
-        return telefone;
-    }
-
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
-
-    public Date getDataNascimento() {
-        return dataNascimento; 
-    }
-
-    public void setDataNascimento(Date dataNascimento) {
-        this.dataNascimento = dataNascimento; 
-    }
-
     public Date getDataCadastro() {
         return dataCadastro;
     }
@@ -109,12 +91,4 @@ public class Voluntario {
     public void setDataCadastro(Date dataCadastro) {
         this.dataCadastro = dataCadastro;
     }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }  
 }
