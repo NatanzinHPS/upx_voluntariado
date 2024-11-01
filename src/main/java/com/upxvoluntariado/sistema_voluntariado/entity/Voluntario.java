@@ -1,16 +1,12 @@
 package com.upxvoluntariado.sistema_voluntariado.entity;
 
 import java.util.Date;
-import java.util.List;
-
-import com.upxvoluntariado.sistema_voluntariado.role.Role;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
@@ -19,13 +15,17 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity //Identificar que é uma entidade
 @Table(name = "voluntarios") //Nome da tabela
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Voluntario {
     @Id //Mostrar que é um ID
     @GeneratedValue(strategy = GenerationType.IDENTITY) //Tipo auto increment no MySQL
@@ -62,6 +62,4 @@ public class Voluntario {
         this.dataCadastro = new Date();
     }
     
-    @ManyToMany
-    private List<Role> roles;
 }

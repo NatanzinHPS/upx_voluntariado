@@ -1,3 +1,4 @@
+/* 
 package com.upxvoluntariado.sistema_voluntariado.service;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,7 +20,7 @@ public class VoluntarioService {
         this.voluntarioRepository = voluntarioRepository; 
     }
     public Voluntario create(Voluntario voluntario){
-        Voluntario existVoluntario = voluntarioRepository.findByCpf(voluntario.getCpf());
+        Voluntario existVoluntario = voluntarioRepository.findByEmail(voluntario.getEmail());
 
         if (existVoluntario != null) {
             throw new Error("Usuário já existe");
@@ -28,4 +29,4 @@ public class VoluntarioService {
         Voluntario criadoVoluntario = voluntarioRepository.save(voluntario); 
         return criadoVoluntario;
     }    
-}
+} */
