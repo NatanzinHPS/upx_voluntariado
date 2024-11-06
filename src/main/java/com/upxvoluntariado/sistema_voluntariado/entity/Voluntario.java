@@ -32,7 +32,7 @@ public class Voluntario {
     private Long id;
     
     @NotNull(message = "Nome é obrigatório")
-    private String nomeCompleto;
+    private String nome;
 
     @Size(min = 11, max = 11, message = "O CPF deve ter exatamente 11 caracteres")
     @Column(columnDefinition = "CHAR(11)")

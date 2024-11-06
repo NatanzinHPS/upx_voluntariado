@@ -1,0 +1,58 @@
+package com.upxvoluntariado.sistema_voluntariado.controller;
+
+import java.util.Optional;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.upxvoluntariado.sistema_voluntariado.dto.RequestCadastroDTO;
+import com.upxvoluntariado.sistema_voluntariado.dto.RequestLoginDTO;
+import com.upxvoluntariado.sistema_voluntariado.dto.ResponseDTO;
+import com.upxvoluntariado.sistema_voluntariado.entity.Voluntario;
+import com.upxvoluntariado.sistema_voluntariado.repository.VoluntarioRepository;
+import com.upxvoluntariado.sistema_voluntariado.security.TokenService;
+
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequestMapping("/auth")
+@RequiredArgsConstructor
+public class AuthController {
+
+    private final VoluntarioRepository repository;
+    private final PasswordEncoder passwordEncoder;
+    private final TokenService tokenService;
+
+    @PostMapping("/login")
+    public ResponseEntity login(@RequestBody RequestLoginDTO body){
+        Voluntario voluntario = this.repository.findByEmail(body.email()).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+        if(passwordEncoder.matches(body.senha(), voluntario.getSenha())){
+            String token = this.tokenService.gerarToken(voluntario);
+            return ResponseEntity.ok(new ResponseDTO(voluntario.getNome(), token));
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @PostMapping("/cadastro")
+    public ResponseEntity cadastro(@RequestBody RequestCadastroDTO body){
+        Optional<Voluntario> voluntario = this.repository.findByEmail(body.email());
+        if(voluntario.isEmpty()){
+            Voluntario novoVoluntario = new Voluntario();
+            novoVoluntario.setSenha(passwordEncoder.encode(body.senha()));
+            novoVoluntario.setCpf(body.cpf());
+            novoVoluntario.setEmail(body.email());
+            novoVoluntario.setNome(body.nome());
+            novoVoluntario.setTelefone(body.telefone());
+            novoVoluntario.setDataNascimento(body.dataNascimento());
+            
+            String token = this.tokenService.gerarToken(novoVoluntario);
+            return ResponseEntity.ok(new ResponseDTO(novoVoluntario.getNome(), token));
+        }
+        
+        return ResponseEntity.badRequest().build();
+    }
+}
