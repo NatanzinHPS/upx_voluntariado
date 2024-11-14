@@ -28,7 +28,7 @@ public class AuthController {
     private final TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody RequestLoginDTO body){
+    public ResponseEntity<?> login(@RequestBody RequestLoginDTO body){
         Voluntario voluntario = this.repository.findByEmail(body.email()).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
         if(passwordEncoder.matches(body.senha(), voluntario.getSenha())){
             String token = this.tokenService.gerarToken(voluntario);
@@ -38,7 +38,7 @@ public class AuthController {
     }
 
     @PostMapping("/cadastro")
-    public ResponseEntity cadastro(@RequestBody RequestCadastroDTO body){
+    public ResponseEntity<?> cadastro(@RequestBody RequestCadastroDTO body){
         Optional<Voluntario> voluntario = this.repository.findByEmail(body.email());
         if(voluntario.isEmpty()){
             Voluntario novoVoluntario = new Voluntario();
@@ -49,6 +49,7 @@ public class AuthController {
             novoVoluntario.setTelefone(body.telefone());
             novoVoluntario.setDataNascimento(body.dataNascimento());
             
+            repository.save(novoVoluntario);
             String token = this.tokenService.gerarToken(novoVoluntario);
             return ResponseEntity.ok(new ResponseDTO(novoVoluntario.getNome(), token));
         }
