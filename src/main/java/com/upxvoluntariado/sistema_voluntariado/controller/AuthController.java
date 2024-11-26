@@ -9,10 +9,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.upxvoluntariado.sistema_voluntariado.dto.RequestCadastroDTO;
+import com.upxvoluntariado.sistema_voluntariado.dto.RequestCadastroOSCDTO;
+import com.upxvoluntariado.sistema_voluntariado.dto.RequestCadastroVoluntarioDTO;
 import com.upxvoluntariado.sistema_voluntariado.dto.RequestLoginDTO;
 import com.upxvoluntariado.sistema_voluntariado.dto.ResponseDTO;
+import com.upxvoluntariado.sistema_voluntariado.entity.OSC;
 import com.upxvoluntariado.sistema_voluntariado.entity.Voluntario;
+import com.upxvoluntariado.sistema_voluntariado.repository.OSCRepository;
 import com.upxvoluntariado.sistema_voluntariado.repository.VoluntarioRepository;
 import com.upxvoluntariado.sistema_voluntariado.security.TokenService;
 
@@ -24,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthController {
 
     private final VoluntarioRepository repository;
+    private final OSCRepository oscRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
 
@@ -38,7 +42,7 @@ public class AuthController {
     }
 
     @PostMapping("/cadastro")
-    public ResponseEntity<?> cadastro(@RequestBody RequestCadastroDTO body){
+    public ResponseEntity<?> cadastro(@RequestBody RequestCadastroVoluntarioDTO body){
         Optional<Voluntario> voluntario = this.repository.findByEmail(body.email());
         if(voluntario.isEmpty()){
             Voluntario novoVoluntario = new Voluntario();
@@ -54,6 +58,24 @@ public class AuthController {
             return ResponseEntity.ok(new ResponseDTO(novoVoluntario.getNome(), token));
         }
         
+        return ResponseEntity.badRequest().build();
+    }
+
+    @PostMapping("/cadastro/osc")
+    public ResponseEntity<?> cadastroOSC(@RequestBody RequestCadastroOSCDTO body){
+        Optional<OSC> osc = this.oscRepository.findByEmail(body.email());
+        if(osc.isEmpty()){
+            OSC novaOsc = new OSC();
+            novaOsc.setSenha(passwordEncoder.encode(body.senha()));
+            novaOsc.setCnpj(body.cnpj());
+            novaOsc.setEmail(body.email());
+            novaOsc.setNome(body.nome());
+
+            oscRepository.save(novaOsc);
+            String token = this.tokenService.gerarTokenOSC(novaOsc);
+            return ResponseEntity.ok(new ResponseDTO(novaOsc.getNome(), token));
+        }
+
         return ResponseEntity.badRequest().build();
     }
 }

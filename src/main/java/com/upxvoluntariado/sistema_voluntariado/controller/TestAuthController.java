@@ -11,6 +11,6 @@ public class TestAuthController {
 
     @GetMapping
     public ResponseEntity<String> teste(){
-        return ResponseEntity.ok("Usuário autenticado");
+        return ResponseEntity.ok("Usuário autenticado teste");
     }
 }
