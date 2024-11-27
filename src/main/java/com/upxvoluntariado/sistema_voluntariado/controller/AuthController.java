@@ -41,6 +41,16 @@ public class AuthController {
         return ResponseEntity.badRequest().build();
     }
 
+    @PostMapping("/login/osc")
+    public ResponseEntity<?> loginosc(@RequestBody RequestLoginDTO body){
+        OSC osc = this.oscRepository.findByEmail(body.email()).orElseThrow(() -> new RuntimeException("OSC não encontrada"));
+        if(passwordEncoder.matches(body.senha(), osc.getSenha())){
+            String token = this.tokenService.gerarTokenOSC(osc);
+            return ResponseEntity.ok(new ResponseDTO(osc.getNome(), token));
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
     @PostMapping("/cadastro")
     public ResponseEntity<?> cadastro(@RequestBody RequestCadastroVoluntarioDTO body){
         Optional<Voluntario> voluntario = this.repository.findByEmail(body.email());
