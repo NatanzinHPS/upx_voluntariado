@@ -2,6 +2,7 @@ package com.upxvoluntariado.sistema_voluntariado.controller;
 
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +19,7 @@ import com.upxvoluntariado.sistema_voluntariado.entity.Voluntario;
 import com.upxvoluntariado.sistema_voluntariado.repository.OSCRepository;
 import com.upxvoluntariado.sistema_voluntariado.repository.VoluntarioRepository;
 import com.upxvoluntariado.sistema_voluntariado.security.TokenService;
+import com.upxvoluntariado.sistema_voluntariado.service.EmailService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,6 +27,9 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
+
+    @Autowired
+	private EmailService emailService;
 
     private final VoluntarioRepository repository;
     private final OSCRepository oscRepository;
@@ -65,6 +70,7 @@ public class AuthController {
             
             repository.save(novoVoluntario);
             String token = this.tokenService.gerarToken(novoVoluntario);
+            emailService.enviarEmail(novoVoluntario.getEmail(), "Usuário Cadastrado", "Usuário " + novoVoluntario.getNome() + " cadastrado com sucesso.");
             return ResponseEntity.ok(new ResponseDTO(novoVoluntario.getNome(), token));
         }
         
@@ -83,6 +89,7 @@ public class AuthController {
 
             oscRepository.save(novaOsc);
             String token = this.tokenService.gerarTokenOSC(novaOsc);
+            emailService.enviarEmail(novaOsc.getEmail(), "OSC cadastrada", "teste");
             return ResponseEntity.ok(new ResponseDTO(novaOsc.getNome(), token));
         }
 
