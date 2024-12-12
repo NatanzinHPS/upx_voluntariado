@@ -89,7 +89,7 @@ public class AuthController {
 
             oscRepository.save(novaOsc);
             String token = this.tokenService.gerarTokenOSC(novaOsc);
-            emailService.enviarEmail(novaOsc.getEmail(), "OSC cadastrada", "teste");
+            emailService.enviarEmail(novaOsc.getEmail(), "OSC cadastrada", "OSC " + novaOsc.getNome() + " cadastrada com sucesso.";
             return ResponseEntity.ok(new ResponseDTO(novaOsc.getNome(), token));
         }
 
